@@ -390,10 +390,6 @@ public class ModelADServiceImpl implements ModelADService {
 			pstmt.setString(3, serviceTypeValue);
 			/** End Carlos Parada */
 			
-			System.out.println("m_webservice.getWS_WebService_ID()" + m_webservice.getWS_WebService_ID());
-			System.out.println("m_webservicemethod.getWS_WebServiceMethod_ID()" + m_webservicemethod.getWS_WebServiceMethod_ID());
-			System.out.println("serviceTypeValue" + serviceTypeValue);
-			
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				m_webservicetype = new MWebServiceType (m_cs.getM_ctx(), rs, null);
