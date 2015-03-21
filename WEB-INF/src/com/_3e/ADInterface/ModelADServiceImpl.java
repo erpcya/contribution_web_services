@@ -103,6 +103,9 @@ import pl.x3E.adInterface.ModelCRUD.Action.Enum;
 /**
  *
  * @author kolec
+ * @author Carlos Parada, cparada@erpcya.com, ERPCyA http://www.erpcya.com
+ *  	<li>FR [ 9223372036854775807 ] Add changes in Web Services for support to Mobile Services
+ *  	@see http://adempiere.atlassian.net/browse/ADEMPIERE-395
  *
  */
 public class ModelADServiceImpl implements ModelADService {
@@ -366,11 +369,11 @@ public class ModelADServiceImpl implements ModelADService {
 
 		m_webservicetype = null;
 		final String sql = "SELECT * FROM WS_WebServiceType " +
-				/** 2014-11-05 Carlos Parada Remove Client Filter */
+				//	Carlos Parada Remove Client Filter FR [ 9223372036854775807 ]
 				//"WHERE AD_Client_ID=? " +
 				//"AND WS_WebService_ID=? " +
 				"WHERE WS_WebService_ID=? " +
-				/** End Carlos Parada */
+				//	End Carlos Parada
 				"AND WS_WebServiceMethod_ID=? " +
 				"AND Value=? " +
 				"AND IsActive='Y'";
@@ -379,16 +382,15 @@ public class ModelADServiceImpl implements ModelADService {
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			/** 2014-11-05 Carlos Parada Remove Client Filter */
-			/*pstmt.setInt(1, m_cs.getM_AD_Client_ID());
-			pstmt.setInt(2, m_webservice.getWS_WebService_ID());
-			pstmt.setInt(3, m_webservicemethod.getWS_WebServiceMethod_ID());
-			pstmt.setString(4, serviceTypeValue);*/
+			//	Carlos Parada Remove Client Filter FR [ 9223372036854775807 ]
+			//pstmt.setInt(1, m_cs.getM_AD_Client_ID());
+			//pstmt.setInt(2, m_webservice.getWS_WebService_ID());
+			//pstmt.setInt(3, m_webservicemethod.getWS_WebServiceMethod_ID());
+			//pstmt.setString(4, serviceTypeValue)
 			
 			pstmt.setInt(1, m_webservice.getWS_WebService_ID());
 			pstmt.setInt(2, m_webservicemethod.getWS_WebServiceMethod_ID());
 			pstmt.setString(3, serviceTypeValue);
-			/** End Carlos Parada */
 			
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
@@ -587,10 +589,10 @@ public class ModelADServiceImpl implements ModelADService {
     		}
     		
     		sql += " FROM " + table.getTableName() + " WHERE IsActive='Y'";
-    		/** 2014-11-05 Carlos Parada Change for ReadOnly SQL Access */
+    		//	Carlos Parada Change for ReadOnly SQL Access FR [ 9223372036854775807 ]
     		//sql = role.addAccessSQL(sql, table.getTableName(), true, true);
     		sql = role.addAccessSQL(sql, table.getTableName(), true, false);
-    		/** End Carlos Parada */ 
+    		//	End Carlos Parada
     		
     		sql += filter;
     		if (rt.getWhereClause() != null && rt.getWhereClause().length() > 0)
@@ -988,20 +990,20 @@ public class ModelADServiceImpl implements ModelADService {
     	ModelCRUD modelCRUD = req.getModelCRUDRequest().getModelCRUD();
 		String serviceType = modelCRUD.getServiceType();
 		
-		/** 2014-12-04 Carlos Parada Add Support for Paginate Records */ 
+		//	Carlos Parada Add Support for Paginate Records FR [ 9223372036854775807 ] 
 
-		/** Current Page*/
+		//	Current Page
 		int currentPage = req.getModelCRUDRequest().getModelCRUD().getPageNo();
 		
-		/** Records per Page*/
+		//	Records per Page
 		int m_RecByPage  = MSysConfig.getIntValue("WS_RECORDS_BY_PAGE", 1);
 		
-		/** Quantity Pages*/
+		//	Quantity Pages
 		int qtyPages =  0;
 		
 		log.info("Current Page " + currentPage);
 
-		/** 2014-12-04 Carlos Parada */ 
+		//	Carlos Parada
 		
     	ADLoginRequest reqlogin = req.getModelCRUDRequest().getADLoginRequest();
     	String err = modelLogin(reqlogin, webServiceName, "queryData", serviceType);
@@ -1024,7 +1026,7 @@ public class ModelADServiceImpl implements ModelADService {
 
 		int roleid = reqlogin.getRoleID();
 		MRole role = new MRole(ctx, roleid, null);
-		// 2014-12-04 Carlos Parada Replace ResultSet For Query  
+		//	Carlos Parada Replace ResultSet For Query FR [ 9223372036854775807 ]  
 		List<PO> records = null ;
 		String key = m_cs.getM_AD_User_ID() + "_" + serviceType;
 		
@@ -1042,8 +1044,9 @@ public class ModelADServiceImpl implements ModelADService {
 						+ field.getColumn() + " not allowed", new QName("queryData"));
     		}
 		}
+		//	Dixon Martinez Fix Error in filter For Query FR [ 9223372036854775807 ]
 		if (modelCRUD.getFilter() != null && modelCRUD.getFilter().length() > 0)
-			sqlWhere += " AND " + modelCRUD.getFilter();
+			sqlWhere +=  (sqlWhere.length() > 0) ? sqlWhere += " AND " + modelCRUD.getFilter() : modelCRUD.getFilter();
 		
     	POInfo poinfo = POInfo.getPOInfo(ctx, table.getAD_Table_ID());
     	int cnt = 0;
